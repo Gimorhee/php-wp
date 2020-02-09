@@ -48,6 +48,7 @@ while(have_posts()) {
 
 get_the_title(); // Getting the Post title of the certain page. ex) get_the_title(get_the_ID());
 the_content(); // Post body content
+the_excerpt(); // So far, it seems like its pretty much same as the_content(); 
 the_permalink(); // Link to a certain post
 get_header(); // Getting header content from header.php -> avoiding to code header/footer all the time 
 get_footer(); // Getting footer content from footer.php
@@ -61,6 +62,16 @@ wp_enqueue_script("file-name", get_theme_file_url("/js/scripts-bundled.js"), NUL
 get_stylesheet_uri(); // 2nd parameter inside wp_enqueue_style function which calls style.css file
 get_theme_file_uri(); // Getting theme file image function -> ex) <?php echo get_theme_file_uri("/images/library-hero.jgp") ? >
 get_the_ID(); // Getting the ID of certain page
+the_author_posts_link(); // Getting the post author as a link
+the_time("m-d-Y"); // https://wordpress.org/support/article/formatting-date-and-time/
+get_the_category_list(",") // Getting the category list
+paginate_links(); // Gotta echo it first; After setting blog pages at most (@ Settings > Reading) it allows the pagination
+is_category(); // Returns true if we are on the category archive screen
+single_cat_title(); // Echo single category name
+is_author(); // Returns true if we are on the author archive screen
+the_author(); // Returns the author name
+the_archive_title(); // Returns the archive data accordingly (by Author, date, category); 
+the_archive_desciption(); // Returns the archive description written in WP-Admin page
 wp_get_post_parent_ID(); // Getting the parent ID of a child page. ex) <?php wp_get_post_parent_ID(get_the_ID())? >
 get_pages(); // Returning page info. ex) For below example, it will return something if the page has children page or return nothing if none
 <?php 
@@ -88,6 +99,40 @@ register_nav_menu("AnylocationName", "Name that will actually appear on the admi
 wp_nav_menu(array(
     "theme_location" => "CertainLocationName"
 ));
+WP_Query(); // WP Custom Query. Example below
+<?php 
+    $posts = new WP_Query(array(
+        // Returns posts per page
+        "posts_per_page" => 2,
+        // Returns posts under certain category name
+        "category_name" => "awards",
+        // Returns posts with certain post type
+        "post_type" => "page"
+    ));
+
+    while($posts->have_posts()) {
+        $posts->have_post(); ?>
+
+        <li><?php the_title(); ?></li>
+    <?php }
+?>
+wp_trim_words(get_the_content(), 18) // Need to echo first: it basically trims certain/returned data into given length of words. In this case, the length is 18 words.
+wp_reset_postdata(); // After using custom WP Query and the while loop, its a good habit to end the while loop with this function which reset different WP data and global variables back to the state that it was in when it made its default automatic query based on the current URL
+get_post_type(); // Getting the post type. ex) if (get_post_type() == 'post') { Do Something }
+register_post_type("post_type_name", array( // Built-in WP function which registers new Post type in Admin page. Must be coded inside functions.php file
+    "public" => true,
+    // Setting the name of the Post type to "Events"
+    "labels" => array(
+        "name" => "Events",
+        "add_new_item" => "Add New Event",
+        "edit_item" => "Edit Event",
+        "all_items" => "All Events",
+        "singular_name" => "Event"
+    ),
+    // Chaning the menu icon of the newly added post type in Admin page
+    "menu-icon" => "dashicons-calendar-alt"
+));
+
 
 
 // WP Files
@@ -97,6 +142,8 @@ page.php // for individual page
 header.php // header file -> avoiding to code header/footer all the time -> wp_head() should be included in <head> tag
 footer.php // footer file
 functions.php // file that allows us to actually communicate with WP -> add_action() and other functions should be included in this file
+front-page.php // When I change the homepage displays to a static page. @WP-Admin > Settings > Reading 
+archive.php // When I want to look for blogs only for certain category, author, date, etc...
 
 // ex) functions.php 
 <?php 
