@@ -174,7 +174,7 @@ class Customer {
     protected $budget;
 
     // Constructor
-    __constructor() {
+    public function __constructor() {
     $this->id = $id;
     }
 
@@ -192,5 +192,33 @@ $customer = new Customer;
 class Buyer extends Customer {
     // Codes
 }
+
+// Example: connecting PHP with mySQL
+<?php 
+    class Database {
+        // DB Parameters
+        private $host = "localhost";
+        private $db_name = "myblog";
+        private $username = "root";
+        private $password = "123456";
+        private $conn;
+
+        // DB Connect
+        public function connect() {
+            $this->conn = null;
+
+            try {
+                $this->conn = new PDO("mysql:host=" . $this->host . ";dbname= " . $this->db_name,
+                $this->username, $this->password);
+
+                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                echo "Connection Error: " . $e -> getMessage();
+            }
+
+            return $this->conn;
+        }
+    }
+?>
 
 ?>
